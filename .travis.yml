@@ -4,5 +4,4 @@ xcode_scheme: BrownoutTests
 xcode_sdk: iphonesimulator
 notifications:
   email: false
-  slack:
-    secure: PfDiPezGCdA0lBULaYYkgfNr
+  slack: bitz-co-jp:PfDiPezGCdA0lBULaYYkgfNr
