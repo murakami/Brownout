@@ -1,0 +1,8 @@
+language: objective-c
+xcode_project: Brownout.xcodeproj
+xcode_scheme: BrownoutTests
+xcode_sdk: iphonesimulator
+notifications:
+  email: false
+  slack:
+    secure: PfDiPezGCdA0lBULaYYkgfNr
