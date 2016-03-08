@@ -1,4 +1,5 @@
 language: objective-c
+osx_image: xcode7.3
 xcode_project: Brownout.xcodeproj
 xcode_scheme: BrownoutTests
 xcode_sdk: iphonesimulator
