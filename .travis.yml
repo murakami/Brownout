@@ -1,8 +1,8 @@
 language: objective-c
 osx_image: xcode7.2
 script:
-  - xcodebuild test -project Brownout.xcodeproj -target BrownoutTests -sdk iphonesimulator
-  - xcodebuild test -project Brownout.xcodeproj -target BrownoutUITests -sdk iphonesimulator
+  - xcodebuild test -project Brownout.xcodeproj -target BrownoutTests -scheme BrownoutTests -sdk iphonesimulator
+  - xcodebuild test -project Brownout.xcodeproj -target BrownoutUITests -scheme BrownoutUITests -sdk iphonesimulator
 xcode_project: Brownout.xcodeproj
 xcode_scheme: BrownoutTests
 xcode_sdk: iphonesimulator
