@@ -1,8 +1,11 @@
 language: objective-c
 osx_image: xcode7.2
+script:
+  - xcodebuild test -project Brownout.xcodeproj -target BrownoutTests -sdk iphonesimulator
+  - xcodebuild test -project Brownout.xcodeproj -target BrownoutUITests -sdk iphonesimulator
 xcode_project: Brownout.xcodeproj
 xcode_scheme: BrownoutTests
 xcode_sdk: iphonesimulator
 notifications:
-  email: false
-  slack: bitz-co-jp:PfDiPezGCdA0lBULaYYkgfNr
+  email:
+    - yukio.murakami@gmail.com
