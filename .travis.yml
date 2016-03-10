@@ -9,3 +9,4 @@ xcode_sdk: iphonesimulator
 notifications:
   email:
     - yukio.murakami@gmail.com
+  slack: bitz-co-jp:PfDiPezGCdA0lBULaYYkgfNr
