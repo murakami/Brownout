@@ -4,6 +4,8 @@ import Charts
 struct DemandChartView: View {
     let forecast: DailyForecast
 
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
     private var chartData: [SeriesPoint] {
         forecast.entries.flatMap { entry -> [SeriesPoint] in
             var pts = [SeriesPoint(time: entry.time, value: entry.capacity, series: .capacity)]
@@ -14,14 +16,12 @@ struct DemandChartView: View {
     }
 
     private var yDomain: ClosedRange<Double> {
-        let vals = chartData.map(\.value)
-        let lo = (vals.min() ?? 0) * 0.95
-        let hi = (vals.max() ?? 1) * 1.05
-        return lo...hi
+        let hi = (chartData.map(\.value).max() ?? 1) * 1.05
+        return 0...hi
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 16) {
                 ForEach(ChartSeries.allCases, id: \.self) { s in
                     LegendItem(series: s)
@@ -29,6 +29,7 @@ struct DemandChartView: View {
             }
             .font(.caption)
             .padding(.horizontal, 4)
+            .padding(.bottom, verticalSizeClass == .regular ? 24 : 12)
 
             Chart {
                 ForEach(chartData) { point in
@@ -81,7 +82,8 @@ struct DemandChartView: View {
             }
             .chartYScale(domain: yDomain)
             .chartLegend(.hidden)
-            .frame(height: 280)
+            .frame(maxHeight: .infinity)
+            .padding(.bottom, verticalSizeClass == .regular ? 32 : 0)
 
             Text("Unit: 万kW  (×10,000 kW)")
                 .font(.caption2)

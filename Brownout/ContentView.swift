@@ -17,17 +17,13 @@ struct ContentView: View {
                         Task { await viewModel.load() }
                     }
                 } else if let forecast = viewModel.forecast {
-                    ScrollView {
-                        VStack(spacing: 20) {
-                            UsageRateView(forecast: forecast)
-                            DemandChartView(forecast: forecast)
-                                .padding(.horizontal)
-                        }
-                        .padding(.vertical)
+                    VStack(spacing: 20) {
+                        UsageRateView(forecast: forecast)
+                        DemandChartView(forecast: forecast)
+                            .padding(.horizontal)
                     }
-                    .refreshable {
-                        await viewModel.load()
-                    }
+                    .padding(.vertical)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 }
             }
             .navigationTitle("Power Forecast")
