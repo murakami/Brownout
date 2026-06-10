@@ -7,7 +7,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(.systemBackground).ignoresSafeArea()
+                Color(.systemGroupedBackground).ignoresSafeArea()
 
                 if viewModel.isLoading {
                     ProgressView("Loading…")

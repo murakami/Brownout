@@ -5,6 +5,7 @@ struct DemandChartView: View {
     let forecast: DailyForecast
 
     @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @Environment(\.colorScheme) private var colorScheme
 
     private var chartData: [SeriesPoint] {
         forecast.entries.flatMap { entry -> [SeriesPoint] in
@@ -43,7 +44,7 @@ struct DemandChartView: View {
                 }
 
                 RuleMark(x: .value("Now", Date()))
-                    .foregroundStyle(.secondary.opacity(0.5))
+                    .foregroundStyle(.secondary.opacity(colorScheme == .dark ? 0.5 : 0.65))
                     .lineStyle(StrokeStyle(lineWidth: 1))
                     .annotation(position: .top, alignment: .leading) {
                         Text("Now")
@@ -58,7 +59,7 @@ struct DemandChartView: View {
             .chartXAxis {
                 AxisMarks(values: .stride(by: .hour, count: 3)) { _ in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [3, 3]))
-                        .foregroundStyle(.secondary.opacity(0.3))
+                        .foregroundStyle(.secondary.opacity(colorScheme == .dark ? 0.3 : 0.5))
                     AxisValueLabel(
                         format: .dateTime
                             .hour(.defaultDigits(amPM: .omitted))
@@ -70,7 +71,7 @@ struct DemandChartView: View {
             .chartYAxis {
                 AxisMarks { value in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [3, 3]))
-                        .foregroundStyle(.secondary.opacity(0.3))
+                        .foregroundStyle(.secondary.opacity(colorScheme == .dark ? 0.3 : 0.5))
                     AxisValueLabel {
                         if let v = value.as(Double.self) {
                             Text(Int(v).formatted(.number))
@@ -81,6 +82,7 @@ struct DemandChartView: View {
                 }
             }
             .chartYScale(domain: yDomain)
+            .chartBackground { _ in Color(.systemBackground) }
             .chartLegend(.hidden)
             .frame(maxHeight: .infinity)
             .padding(.bottom, verticalSizeClass == .regular ? 32 : 0)
