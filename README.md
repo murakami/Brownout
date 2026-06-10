@@ -74,4 +74,4 @@ Brownout/
 
 ## ライセンス
 
-Copyright © 2026 Yukio Murakami. All rights reserved.
+Copyright © 2011-2026 Bitz Co., Ltd. All rights reserved.

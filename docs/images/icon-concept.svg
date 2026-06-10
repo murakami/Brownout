@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <!-- 水色グラデーション背景 -->
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C8EBF8"/>
+      <stop offset="100%" stop-color="#A6D9F0"/>
+    </linearGradient>
+    <!-- 電球ガラス：薄いアンバー（薄暗い状態 = brownout） -->
+    <radialGradient id="bulbGlass" cx="45%" cy="40%" r="55%">
+      <stop offset="0%"   stop-color="#FFFBE6"/>
+      <stop offset="60%"  stop-color="#FFF0A0"/>
+      <stop offset="100%" stop-color="#FFD740"/>
+    </radialGradient>
+    <!-- 電球内グロー -->
+    <radialGradient id="bulbGlow" cx="50%" cy="45%" r="45%">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <!-- 白丸の外周わずかな影 -->
+    <filter id="circleShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#0A2A4A" flood-opacity="0.18"/>
+    </filter>
+    <!-- グラフラインのグロー -->
+    <filter id="lineGlow" x="-10%" y="-80%" width="120%" height="260%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- ── 背景 ─────────────────────────────────────────── -->
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+
+  <!-- ── 白丸（参考画像のスタイルに合わせた台座） ─────── -->
+  <circle cx="512" cy="480" r="420"
+          fill="white"
+          filter="url(#circleShadow)"/>
+
+  <!-- ── 電球ガラス（ペアシェイプ） ───────────────────── -->
+  <!--
+    形状の説明:
+    上部の丸い球 → 下に向かって細くなるネック → ベース（ネジ状のリング）
+    中心 x=512, 球の中心 y=410
+  -->
+  <path
+    d="M 512 170
+       C 700 170, 750 310, 750 430
+       C 750 545, 700 605, 672 638
+       C 650 665, 645 690, 645 720
+       L 379 720
+       C 379 690, 374 665, 352 638
+       C 324 605, 274 545, 274 430
+       C 274 310, 324 170, 512 170
+       Z"
+    fill="url(#bulbGlass)"
+    stroke="#1A3050"
+    stroke-width="20"
+    stroke-linejoin="round"
+  />
+
+  <!-- 電球ガラス内グロー -->
+  <path
+    d="M 512 170
+       C 700 170, 750 310, 750 430
+       C 750 545, 700 605, 672 638
+       C 650 665, 645 690, 645 720
+       L 379 720
+       C 379 690, 374 665, 352 638
+       C 324 605, 274 545, 274 430
+       C 274 310, 324 170, 512 170
+       Z"
+    fill="url(#bulbGlow)"
+  />
+
+  <!-- ── 電球内の需要グラフ ──────────────────────────── -->
+  <!--
+    チャートエリア: x 358-652 (0:00-24:00), y 362-542
+    供給力(青破線): 上端付近フラット
+    予測(赤破線):   1日分の完全カーブ（深夜低 → 昼ピーク → 夕方減少）
+    実績(緑実線):   ~17:30 (x=572) で終端、予測と微妙にずれ
+  -->
+
+  <!-- 供給力ライン（青破線）: ほぼ水平 y≈370 -->
+  <path
+    d="M 358 372 C 430 367 490 365 512 364 S 600 366 652 371"
+    fill="none"
+    stroke="#1565C0"
+    stroke-width="11"
+    stroke-dasharray="20,13"
+    stroke-linecap="round"
+    filter="url(#lineGlow)"
+    opacity="0.85"
+  />
+
+  <!-- 予測需要ライン（赤破線）: 1日分の完全山型カーブ -->
+  <!--
+    深夜低(358,525) → 早朝最低(382,535) → 朝上昇 → 昼ピーク(505,393)
+    → 午後(529,395) → 夕方減少(578,440) → 夜間(627,510) → 終端(652,522)
+  -->
+  <path
+    d="M 358 525
+       C 368 530, 376 534, 382 535
+       C 394 536, 408 524, 425 506
+       C 444 484, 455 458, 468 438
+       C 482 416, 494 398, 508 393
+       C 520 388, 534 388, 545 395
+       C 558 403, 568 424, 580 443
+       C 596 466, 614 492, 627 510
+       C 639 526, 648 524, 652 522"
+    fill="none"
+    stroke="#C62828"
+    stroke-width="8"
+    stroke-dasharray="13,9"
+    stroke-linecap="round"
+    opacity="0.82"
+  />
+
+  <!-- 実績需要ライン（緑実線）: ~17:30 (x=572) で終端、予測と微妙にずれ -->
+  <!--
+    序盤は予測に近く、昼前後から上方乖離、終端では8-12px のずれ
+    深夜(358,523) → 早朝(382,534) → 朝上昇 → 昼ピーク(505,385)
+    → 高止まり(529,398) → x=572 で終端(y=420)
+  -->
+  <path
+    d="M 358 523
+       C 368 528, 376 532, 382 534
+       C 394 534, 408 520, 425 500
+       C 444 477, 455 450, 468 429
+       C 482 406, 494 390, 507 385
+       C 519 380, 534 383, 545 391
+       C 557 399, 564 408, 572 420"
+    fill="none"
+    stroke="#2E7D32"
+    stroke-width="13"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    filter="url(#lineGlow)"
+    opacity="0.96"
+  />
+
+  <!-- 実績終端ドット（現在時刻） -->
+  <circle cx="572" cy="420" r="9"
+          fill="#2E7D32" opacity="0.95"
+          filter="url(#lineGlow)"/>
+
+  <!-- 現在時刻マーカー（縦破線） -->
+  <line x1="572" y1="362" x2="572" y2="542"
+        stroke="#FFFFFF"
+        stroke-width="4"
+        stroke-dasharray="8,6"
+        stroke-linecap="round"
+        opacity="0.45"/>
+
+  <!-- ── 電球ベース（ネジリング × 4段） ─────────────── -->
+  <rect x="379" y="720" width="266" height="32" rx="6"
+        fill="#1A3050" stroke="#1A3050" stroke-width="4"/>
+  <rect x="387" y="754" width="250" height="26" rx="5"
+        fill="#1A3050" stroke="#1A3050" stroke-width="4"/>
+  <rect x="396" y="782" width="232" height="26" rx="5"
+        fill="#1A3050" stroke="#1A3050" stroke-width="4"/>
+  <rect x="405" y="810" width="214" height="26" rx="5"
+        fill="#1A3050" stroke="#1A3050" stroke-width="4"/>
+
+  <!-- ベース底端（丸底） -->
+  <rect x="416" y="838" width="192" height="28" rx="14"
+        fill="#0D1F35"/>
+
+  <!-- ── ハイライト（ガラスの光沢感） ──────────────── -->
+  <ellipse cx="448" cy="300" rx="48" ry="90"
+           fill="white" opacity="0.22"
+           transform="rotate(-20 448 300)"/>
+
+</svg>
