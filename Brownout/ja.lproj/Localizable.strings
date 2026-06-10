@@ -1,0 +1,58 @@
+/* ContentView */
+"Power Forecast" = "でんき予報";
+"Loading…" = "読み込み中…";
+
+/* ErrorView */
+"Failed to fetch data" = "データを取得できませんでした";
+"Retry" = "再試行";
+"Open official website" = "公式サイトを開く";
+
+/* UsageRateView */
+"Usage Rate" = "使用率";
+"Actual" = "実績";
+"Supply Capacity" = "供給力";
+
+/* DemandChartView */
+"Now" = "現在";
+"Max Supply" = "最大供給力";
+"Forecast" = "予測";
+"Unit: 万kW  (×10,000 kW)" = "単位: 万kW";
+
+/* AboutView */
+"About" = "アプリ情報";
+"Japan Power Forecast Viewer" = "でんき予報ビューア";
+"Data" = "データ";
+"Area Power Forecasts (TDGC)" = "各エリアのでんき予報（送配電網協議会）";
+"Version" = "バージョン";
+"App Version" = "バージョン";
+"Close" = "閉じる";
+
+/* Areas */
+"area.hokkaido" = "北海道";
+"area.tohoku"   = "東北";
+"area.tokyo"    = "東京";
+"area.chubu"    = "中部";
+"area.hokuriku" = "北陸";
+"area.kansai"   = "関西";
+"area.chugoku"  = "中国";
+"area.shikoku"  = "四国";
+"area.kyushu"   = "九州";
+"area.okinawa"  = "沖縄";
+
+/* Companies */
+"company.hokkaido" = "北海道電力ネットワーク";
+"company.tohoku"   = "東北電力ネットワーク";
+"company.tokyo"    = "東京電力パワーグリッド";
+"company.chubu"    = "中部電力パワーグリッド";
+"company.hokuriku" = "北陸電力送配電";
+"company.kansai"   = "関西電力送配電";
+"company.chugoku"  = "中国電力ネットワーク";
+"company.shikoku"  = "四国電力送配電";
+"company.kyushu"   = "九州電力送配電";
+"company.okinawa"  = "沖縄電力";
+
+/* ForecastError */
+"error.invalid_url" = "URLが無効です";
+"error.http %lld"   = "HTTPエラー: %lld";
+"error.parse %@"    = "データ解析エラー: %@";
+"error.no_data"     = "データが見つかりませんでした。URLが変更された可能性があります。";

@@ -1,0 +1,58 @@
+/* ContentView */
+"Power Forecast" = "Power Forecast";
+"Loading…" = "Loading…";
+
+/* ErrorView */
+"Failed to fetch data" = "Failed to fetch data";
+"Retry" = "Retry";
+"Open official website" = "Open official website";
+
+/* UsageRateView */
+"Usage Rate" = "Usage Rate";
+"Actual" = "Actual";
+"Supply Capacity" = "Supply Capacity";
+
+/* DemandChartView */
+"Now" = "Now";
+"Max Supply" = "Max Supply";
+"Forecast" = "Forecast";
+"Unit: 万kW  (×10,000 kW)" = "Unit: 万kW  (×10,000 kW)";
+
+/* AboutView */
+"About" = "About";
+"Japan Power Forecast Viewer" = "Japan Power Forecast Viewer";
+"Data" = "Data";
+"Area Power Forecasts (TDGC)" = "Area Power Forecasts (TDGC)";
+"Version" = "Version";
+"App Version" = "App Version";
+"Close" = "Close";
+
+/* Areas */
+"area.hokkaido" = "Hokkaido";
+"area.tohoku"   = "Tohoku";
+"area.tokyo"    = "Tokyo";
+"area.chubu"    = "Chubu";
+"area.hokuriku" = "Hokuriku";
+"area.kansai"   = "Kansai";
+"area.chugoku"  = "Chugoku";
+"area.shikoku"  = "Shikoku";
+"area.kyushu"   = "Kyushu";
+"area.okinawa"  = "Okinawa";
+
+/* Companies */
+"company.hokkaido" = "Hokkaido Power Network";
+"company.tohoku"   = "Tohoku Power Network";
+"company.tokyo"    = "TEPCO Power Grid";
+"company.chubu"    = "Chubu Power Grid";
+"company.hokuriku" = "Hokuriku Power Transmission";
+"company.kansai"   = "Kansai Power Transmission";
+"company.chugoku"  = "Chugoku Power Network";
+"company.shikoku"  = "Shikoku Power Transmission";
+"company.kyushu"   = "Kyushu Power Transmission";
+"company.okinawa"  = "Okinawa Electric Power";
+
+/* ForecastError */
+"error.invalid_url" = "Invalid URL";
+"error.http %lld"   = "HTTP error: %lld";
+"error.parse %@"    = "Data parse error: %@";
+"error.no_data"     = "No data found. The URL may have changed.";
