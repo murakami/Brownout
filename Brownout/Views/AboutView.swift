@@ -16,7 +16,7 @@ struct AboutView: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Brownout")
                                 .font(.headline)
-                            Text("Japan Power Forecast Viewer")
+                            Text("© 2011-2026 Bitz Co., Ltd.")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
