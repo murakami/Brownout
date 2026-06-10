@@ -19,7 +19,7 @@ enum CSVURLStrategy: Sendable {
     /// 固定 URL（常に当日データを返すエンドポイント）
     case fixed(url: String)
 
-    func resolve(for date: Date) -> URL? {
+    nonisolated func resolve(for date: Date) -> URL? {
         switch self {
         case .dateBased(let template):
             let str = template.replacingOccurrences(of: "{date}", with: yyyyMMdd(date))
@@ -29,9 +29,9 @@ enum CSVURLStrategy: Sendable {
         }
     }
 
-    private func yyyyMMdd(_ date: Date) -> String {
+    nonisolated private func yyyyMMdd(_ date: Date) -> String {
         var cal = Calendar(identifier: .gregorian)
-        cal.timeZone = .jst
+        cal.timeZone = TimeZone(identifier: "Asia/Tokyo")!
         let c = cal.dateComponents([.year, .month, .day], from: date)
         return String(format: "%04d%02d%02d", c.year ?? 0, c.month ?? 0, c.day ?? 0)
     }

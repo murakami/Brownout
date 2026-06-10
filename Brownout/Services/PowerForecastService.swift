@@ -30,7 +30,7 @@ enum ForecastError: LocalizedError {
 // MARK: - CSV Parser (テスト可能な独立型)
 
 struct CSVParser {
-    static func parse(_ data: Data, area: PowerArea, date: Date) throws -> DailyForecast {
+    nonisolated static func parse(_ data: Data, area: PowerArea, date: Date) throws -> DailyForecast {
         let fmt = area.csvFormat
         let text = String(data: data, encoding: fmt.encoding)
             ?? String(data: data, encoding: .utf8)
@@ -38,11 +38,12 @@ struct CSVParser {
         return try parseText(text, format: fmt, area: area, date: date)
     }
 
-    static func parseText(_ text: String, format fmt: CSVFormat, area: PowerArea, date: Date) throws -> DailyForecast {
+    nonisolated static func parseText(_ text: String, format fmt: CSVFormat, area: PowerArea, date: Date) throws -> DailyForecast {
+        let jst = TimeZone(identifier: "Asia/Tokyo")!
         var cal = Calendar(identifier: .gregorian)
-        cal.timeZone = .jst
+        cal.timeZone = jst
         var base = cal.dateComponents([.year, .month, .day], from: date)
-        base.timeZone = .jst
+        base.timeZone = jst
 
         let c = fmt.columns
         let minCols = max(c.date, c.time, c.actual, c.predicted, c.capacity) + 1
@@ -81,7 +82,7 @@ struct CSVParser {
         return DailyForecast(area: area, date: date, entries: entries)
     }
 
-    private static func parseTime(_ s: String, base: DateComponents, calendar: Calendar) -> Date? {
+    nonisolated private static func parseTime(_ s: String, base: DateComponents, calendar: Calendar) -> Date? {
         let parts = s.split(separator: ":")
         guard parts.count == 2,
               let hour = Int(parts[0]),
@@ -127,6 +128,3 @@ actor PowerForecastService {
     }
 }
 
-extension TimeZone {
-    static let jst = TimeZone(identifier: "Asia/Tokyo")!
-}
