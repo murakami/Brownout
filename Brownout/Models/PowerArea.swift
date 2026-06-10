@@ -73,12 +73,6 @@ struct ColumnMap: Sendable {
     static let tepco = ColumnMap(date: 0, time: 1, actual: 2, predicted: 3, capacity: 4)
 }
 
-// MARK: - TimeZone helper
-
-private extension TimeZone {
-    static let jst = TimeZone(identifier: "Asia/Tokyo")!
-}
-
 // MARK: - All areas
 
 extension PowerArea {

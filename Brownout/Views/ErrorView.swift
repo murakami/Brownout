@@ -14,7 +14,7 @@ struct ErrorView: View {
             VStack(spacing: 8) {
                 Text("Failed to fetch data")
                     .font(.headline)
-                Text(error.localizedDescription ?? "")
+                Text(error.localizedDescription)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
