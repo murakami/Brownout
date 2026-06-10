@@ -42,12 +42,12 @@ struct DemandChartView: View {
                 }
 
                 RuleMark(x: .value("Now", Date()))
-                    .foregroundStyle(.white.opacity(0.35))
+                    .foregroundStyle(.secondary.opacity(0.5))
                     .lineStyle(StrokeStyle(lineWidth: 1))
                     .annotation(position: .top, alignment: .leading) {
                         Text("Now")
                             .font(.caption2)
-                            .foregroundStyle(.white.opacity(0.55))
+                            .foregroundStyle(.secondary)
                     }
             }
             .chartForegroundStyleScale(
@@ -57,23 +57,23 @@ struct DemandChartView: View {
             .chartXAxis {
                 AxisMarks(values: .stride(by: .hour, count: 3)) { _ in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [3, 3]))
-                        .foregroundStyle(.white.opacity(0.2))
+                        .foregroundStyle(.secondary.opacity(0.3))
                     AxisValueLabel(
                         format: .dateTime
                             .hour(.defaultDigits(amPM: .omitted))
                             .minute()
                     )
-                    .foregroundStyle(.white.opacity(0.7))
+                    .foregroundStyle(.secondary)
                 }
             }
             .chartYAxis {
                 AxisMarks { value in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [3, 3]))
-                        .foregroundStyle(.white.opacity(0.2))
+                        .foregroundStyle(.secondary.opacity(0.3))
                     AxisValueLabel {
                         if let v = value.as(Double.self) {
                             Text(Int(v).formatted(.number))
-                                .foregroundStyle(.white.opacity(0.7))
+                                .foregroundStyle(.secondary)
                                 .font(.caption2)
                         }
                     }
@@ -159,7 +159,12 @@ private struct LegendItem: View {
             capacity: 6000
         )
     }
-    DemandChartView(forecast: DailyForecast(area: .tokyo, date: now, entries: entries))
-        .padding()
-        .background(.black)
+    Group {
+        DemandChartView(forecast: DailyForecast(area: .tokyo, date: now, entries: entries))
+            .padding()
+            .preferredColorScheme(.dark)
+        DemandChartView(forecast: DailyForecast(area: .tokyo, date: now, entries: entries))
+            .padding()
+            .preferredColorScheme(.light)
+    }
 }

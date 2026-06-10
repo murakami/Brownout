@@ -64,8 +64,12 @@ private struct StatRow: View {
 
 #Preview {
     let entries = [ForecastEntry(time: .now, actual: 4200, predicted: 4300, capacity: 6000)]
-    UsageRateView(forecast: DailyForecast(area: .tokyo, date: .now, entries: entries))
-        .padding()
-        .background(.black)
-        .colorScheme(.dark)
+    Group {
+        UsageRateView(forecast: DailyForecast(area: .tokyo, date: .now, entries: entries))
+            .padding()
+            .preferredColorScheme(.dark)
+        UsageRateView(forecast: DailyForecast(area: .tokyo, date: .now, entries: entries))
+            .padding()
+            .preferredColorScheme(.light)
+    }
 }

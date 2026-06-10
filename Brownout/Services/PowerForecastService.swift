@@ -27,41 +27,18 @@ enum ForecastError: LocalizedError {
     }
 }
 
-actor PowerForecastService {
-    static let shared = PowerForecastService()
+// MARK: - CSV Parser (テスト可能な独立型)
 
-    // Safari on iPhone iOS 26 と同等の User-Agent – 一部サーバーがアプリからのアクセスを 403 で弾くため設定
-    private let userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1"
-
-    func fetchForecast(area: PowerArea, date: Date = .now) async throws -> DailyForecast {
-        guard let url = area.csvStrategy.resolve(for: date) else {
-            throw ForecastError.invalidURL
-        }
-        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData)
-        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
-        request.setValue(area.websiteURL.absoluteString, forHTTPHeaderField: "Referer")
-
-        let data: Data
-        do {
-            let (d, response) = try await URLSession.shared.data(for: request)
-            if let http = response as? HTTPURLResponse, http.statusCode != 200 {
-                throw ForecastError.httpError(http.statusCode)
-            }
-            data = d
-        } catch let e as ForecastError {
-            throw e
-        } catch {
-            throw ForecastError.networkError(error)
-        }
-        return try parseCSV(data, area: area, date: date)
-    }
-
-    private func parseCSV(_ data: Data, area: PowerArea, date: Date) throws -> DailyForecast {
+struct CSVParser {
+    static func parse(_ data: Data, area: PowerArea, date: Date) throws -> DailyForecast {
         let fmt = area.csvFormat
         let text = String(data: data, encoding: fmt.encoding)
             ?? String(data: data, encoding: .utf8)
             ?? ""
+        return try parseText(text, format: fmt, area: area, date: date)
+    }
 
+    static func parseText(_ text: String, format fmt: CSVFormat, area: PowerArea, date: Date) throws -> DailyForecast {
         var cal = Calendar(identifier: .gregorian)
         cal.timeZone = .jst
         var base = cal.dateComponents([.year, .month, .day], from: date)
@@ -104,7 +81,7 @@ actor PowerForecastService {
         return DailyForecast(area: area, date: date, entries: entries)
     }
 
-    private func parseTime(_ s: String, base: DateComponents, calendar: Calendar) -> Date? {
+    private static func parseTime(_ s: String, base: DateComponents, calendar: Calendar) -> Date? {
         let parts = s.split(separator: ":")
         guard parts.count == 2,
               let hour = Int(parts[0]),
@@ -118,6 +95,38 @@ actor PowerForecastService {
     }
 }
 
-private extension TimeZone {
+// MARK: - Service Actor
+
+actor PowerForecastService {
+    static let shared = PowerForecastService()
+
+    // Safari on iPhone iOS 26 と同等の User-Agent – 一部サーバーがアプリからのアクセスを 403 で弾くため設定
+    private let userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1"
+
+    func fetchForecast(area: PowerArea, date: Date = .now) async throws -> DailyForecast {
+        guard let url = area.csvStrategy.resolve(for: date) else {
+            throw ForecastError.invalidURL
+        }
+        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData)
+        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+        request.setValue(area.websiteURL.absoluteString, forHTTPHeaderField: "Referer")
+
+        let data: Data
+        do {
+            let (d, response) = try await URLSession.shared.data(for: request)
+            if let http = response as? HTTPURLResponse, http.statusCode != 200 {
+                throw ForecastError.httpError(http.statusCode)
+            }
+            data = d
+        } catch let e as ForecastError {
+            throw e
+        } catch {
+            throw ForecastError.networkError(error)
+        }
+        return try CSVParser.parse(data, area: area, date: date)
+    }
+}
+
+extension TimeZone {
     static let jst = TimeZone(identifier: "Asia/Tokyo")!
 }

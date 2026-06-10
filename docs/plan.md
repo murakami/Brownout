@@ -134,10 +134,11 @@ Brownout/
 - [x] 中部 URL 更新: `/denkiyoho/juyo_cepco003.csv` → `/denki_yoho_content_data/juyo_cepco003.csv`
 - [x] 四国 URL 更新: 固定 `juyo_shikoku.csv` → 日付ベース `juyo_08_{date}.csv`
 - [x] 中国 URL 更新: `/nw/jukyuu/csv/` → `/nw/jukyuu/sys/juyo_07_{date}.csv`
-- [ ] 実機で全エリアのデータ取得確認
-- [ ] ダーク/ライトモード表示確認
-- [ ] `BrownoutTests` に CSV パーステスト追加
-- [ ] `README.md` 更新
+- [x] 実機で全エリアのデータ取得確認
+- [x] グラフ表示確認（系列色・原点接続修正を含む）
+- [x] ダーク/ライトモード表示確認（DemandChartView・UsageRateView を `.secondary` 系色に統一）
+- [x] `BrownoutTests` に CSV パーステスト追加（7テスト: 基本パース・capacity列・actual=0→nil・重複除外・短日付・noDataエラー・使用率計算）
+- [x] `README.md` 更新
 
 ---
 
