@@ -41,22 +41,20 @@ MVVM パターンを採用。データフローは一方向（Service → ViewMo
 ```
 Brownout/
 ├── BrownoutApp.swift
+├── ContentView.swift
 ├── Models/
-│   ├── PowerArea.swift         # エリア定義（10社）
-│   ├── ForecastEntry.swift     # データモデル
-│   └── CSVURLStrategy.swift    # URL解決戦略
+│   ├── PowerArea.swift         # エリア定義（10社）+ CSVURLStrategy + CSVFormat + ColumnMap
+│   └── ForecastEntry.swift     # データモデル（ForecastEntry / DailyForecast）
 ├── Services/
-│   ├── PowerForecastService.swift  # ネットワーク + CSV パース
-│   └── CSVParser.swift             # CSV パーサー
+│   └── PowerForecastService.swift  # ネットワーク + CSV パース（actor）
 ├── ViewModels/
 │   └── ForecastViewModel.swift
 ├── Views/
-│   ├── ContentView.swift
+│   ├── AboutView.swift
 │   ├── AreaPickerView.swift        # エリア選択ピッカー
 │   ├── DemandChartView.swift
-│   ├── UsageRateView.swift
-│   ├── AboutView.swift
-│   └── ErrorView.swift
+│   ├── ErrorView.swift
+│   └── UsageRateView.swift
 ├── en.lproj/Localizable.strings
 └── ja.lproj/Localizable.strings
 ```
@@ -100,17 +98,19 @@ enum CSVURLStrategy: Sendable {
 ```swift
 struct CSVFormat: Sendable {
     let encoding: String.Encoding   // .shiftJIS or .utf8
-    let interval: Int               // 分単位（30 or 60）
-    let columnOrder: ColumnOrder    // 列の順序指定
+    let intervalMinutes: Int        // 分単位（30 or 60）
+    let columns: ColumnMap          // 列の順序指定
 }
 
-struct ColumnOrder: Sendable {
-    let date: Int        // デフォルト: 0
-    let time: Int        // デフォルト: 1
-    let actual: Int      // デフォルト: 2
-    let predicted: Int   // デフォルト: 3
-    let capacity: Int    // デフォルト: 4
+struct ColumnMap: Sendable {
+    let date: Int        // 0
+    let time: Int        // 1
+    let actual: Int      // 2
+    let predicted: Int   // 3
+    let capacity: Int    // standard: 5 / tepco: 4
 }
+// .standard: capacity=5（列4は使用率%）— 大多数のエリア
+// .tepco:    capacity=4（列5は使用率%）— 東京(TEPCO)固有
 ```
 
 ### 全エリア定義

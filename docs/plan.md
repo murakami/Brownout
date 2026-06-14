@@ -123,7 +123,7 @@ Brownout/
 - [x] `ForecastViewModel` に `selectedArea`（`@AppStorage` 永続化）追加
 - [x] ローカライズ文字列にエリア名・会社名（英語/日本語）追加
 
-### Phase 5: 仕上げ 🔄 進行中
+### Phase 5: 仕上げ ✅
 
 - [x] Xcode でビルド・実機起動確認（iOS 26 デプロイターゲット変更済み）
 - [x] HTTP 403 対策: `URLRequest` に Safari iOS User-Agent / Referer ヘッダー追加

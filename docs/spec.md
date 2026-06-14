@@ -40,18 +40,16 @@ DATE 列が "YYYY/MM/DD" 形式（10文字、先頭4桁が数字、5文字目が
 
 | エリア | URL 戦略 | 間隔 | URL / テンプレート（`{date}` = YYYYMMDD） |
 |--------|---------|------|----------------------------------------|
-| 北海道 | 日付ベース | 30分 | `https://denkiyoho.hepco.co.jp/area/data/{date}_hokkaido_jisseki.csv` |
+| 北海道 | 日付ベース | 30分 | `https://denkiyoho.hepco.co.jp/area/data/juyo_01_{date}.csv` |
 | 東北 | 日付ベース | 30分 | `https://setsuden.nw.tohoku-epco.co.jp/common/demand/juyo_02_{date}.csv` |
-| 東京 | 日付ベース | 30分 | `https://www.tepco.co.jp/forecast/html/images/juyo-{date}.csv` |
-| 中部 | 固定 | 30分 | `https://powergrid.chuden.co.jp/denkiyoho/juyo_cepco003.csv` ※要確認 |
+| 東京 | 固定 | 30分 | `https://www.tepco.co.jp/forecast/html/images/juyo-s1-j.csv` |
+| 中部 | 固定 | 30分 | `https://powergrid.chuden.co.jp/denki_yoho_content_data/juyo_cepco003.csv` |
 | 北陸 | 日付ベース | 30分 | `https://www.rikuden.co.jp/nw/denki-yoho/csv/juyo_05_{date}.csv` |
 | 関西 | 固定 | 30分 | `https://www.kansai-td.co.jp/yamasou/juyo1_kansai.csv` |
-| 中国 | 日付ベース | 30分 | `https://www.energia.co.jp/nw/jukyuu/csv/juyo_07_{date}.csv` ※要確認 |
-| 四国 | 固定 | 30分 | `https://www.yonden.co.jp/nw/denkiyoho/juyo_shikoku.csv` |
+| 中国 | 日付ベース | 30分 | `https://www.energia.co.jp/nw/jukyuu/sys/juyo_07_{date}.csv` |
+| 四国 | 日付ベース | 30分 | `https://www.yonden.co.jp/nw/denkiyoho/juyo_08_{date}.csv` |
 | 九州 | 日付ベース | 60分 | `https://www.kyuden.co.jp/td_power_usages/csv/juyo-hourly-{date}.csv` |
 | 沖縄 | 日付ベース | 30分 | `https://www.okiden.co.jp/denki2/juyo_10_{date}.csv` |
-
-> ※要確認: 中部・中国の URL は未検証。`PowerArea.swift` の `csvStrategy` を修正することで対応可能。
 
 参考まとめページ（送配電網協議会）: `https://www.tdgc.jp/areainfo/denki/`
 
@@ -168,7 +166,7 @@ Sheet として表示。
   ... (全10エリア)
 
 ─ Version ───────────────────────────
-  App Version         1.0
+  App Version         2.0
 ```
 
 ---
