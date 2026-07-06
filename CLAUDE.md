@@ -65,6 +65,18 @@ Brownout/
 （`PowerForecastService.CSVParser` 参照）。固定URLがサイレントに古いデータを返し続けるケース（今回の関西の障害の原因）を
 自動検出するための仕組みなので、新しいエリアを追加する際もこの検証ロジックに依存してよい。
 
+### CSV パースの注意点（2026-07 の障害で判明）
+
+- DATE 列は `2026/7/6` のように月・日がゼロ埋みされないことがある。文字数（桁数）を前提にした
+  判定はしないこと。`CSVParser.parseText` は `"/"` で分割して年・月・日を数値として解釈する方式に
+  している（月・日が1桁になる 1〜9日は毎月発生するので影響範囲が大きい）。
+- CSV のエンコーディングは Foundation の `.shiftJIS`（JIS X 0208 のみ）ではなく `String.Encoding.cp932`
+  （`PowerArea.swift` で定義、Windows-31J）を使うこと。`.shiftJIS` は電力会社CSVに含まれる機種依存文字の
+  デコードに失敗し、CSV全体が読めなくなることがある。
+- デバッグ時は `PowerForecastService` の `os.Logger`（subsystem: `jp.co.bitz.Brownout`）に
+  リクエストURL・最終URL・HTTPステータス・バイト数、パース失敗時は受信データの先頭200バイトを出力している。
+  実機のログは Console.app でデバイスを選択し `subsystem:jp.co.bitz.Brownout` で絞り込むと確認できる。
+
 参考: 送配電網協議会まとめページ https://www.tdgc.jp/areainfo/denki/
 
 ## 開発ルール

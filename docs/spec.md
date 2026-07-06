@@ -24,14 +24,25 @@ DATE,TIME,実績(万kW),予測(万kW),供給力(万kW)
 | 予測(万kW) | Double または空 | 予測値（未来時刻） |
 | 供給力(万kW) | Double | 当日の最大供給能力（全行同値） |
 
-- エンコーディング: Shift-JIS（UTF-8 へのフォールバックあり）
+- エンコーディング: CP932 / Windows-31J（UTF-8 へのフォールバックあり）
+  - Foundation の `.shiftJIS`（JIS X 0208 のみ）は一部エリアの CSV に含まれる
+    機種依存文字のデコードに失敗するため使用しない。`String.Encoding.cp932`
+    （`PowerArea.swift` で定義）を使うこと。
 - `24:00` 行が含まれる場合は除外
 
 ### データ行の判定ロジック
 
 ```
-DATE 列が "YYYY/MM/DD" 形式（10文字、先頭4桁が数字、5文字目が "/"）
-かつ列数が ColumnMap で指定された最大インデックス + 1 以上
+DATE 列を "/" で分割して 3 つの数値（年・月・日）として解釈できる行のみ処理する。
+月・日はゼロ埋みされない場合がある（例: "2026/7/6"）ため、文字数や桁数を
+前提にした判定はしないこと（2026-07 に発生した不具合の原因）。
+かつ列数が ColumnMap で指定された最大インデックス + 1 以上。
+
+さらに、解釈できた年・月・日が取得対象日と一致しない行は無視する
+（固定URLが更新停止して古いデータを返し続けるケースの検知のため）。
+DATE 形式の行が1つもない場合は ForecastError.noData、
+DATE 形式の行はあるが取得対象日と一致する行が1つもない場合は
+ForecastError.staleData を送出する（PowerForecastService.CSVParser）。
 ```
 
 ---
@@ -45,11 +56,16 @@ DATE 列が "YYYY/MM/DD" 形式（10文字、先頭4桁が数字、5文字目が
 | 東京 | 固定 | 30分 | `https://www.tepco.co.jp/forecast/html/images/juyo-s1-j.csv` |
 | 中部 | 固定 | 30分 | `https://powergrid.chuden.co.jp/denki_yoho_content_data/juyo_cepco003.csv` |
 | 北陸 | 日付ベース | 30分 | `https://www.rikuden.co.jp/nw/denki-yoho/csv/juyo_05_{date}.csv` |
-| 関西 | 固定 | 30分 | `https://www.kansai-td.co.jp/yamasou/juyo1_kansai.csv` |
+| 関西 | 日付ベース | 30分 | `https://www.kansai-td.co.jp/yamasou/juyo_06_{date}.csv`（2026-07 訂正: 旧 `juyo1_kansai.csv` は更新停止） |
 | 中国 | 日付ベース | 30分 | `https://www.energia.co.jp/nw/jukyuu/sys/juyo_07_{date}.csv` |
 | 四国 | 日付ベース | 30分 | `https://www.yonden.co.jp/nw/denkiyoho/juyo_08_{date}.csv` |
 | 九州 | 日付ベース | 60分 | `https://www.kyuden.co.jp/td_power_usages/csv/juyo-hourly-{date}.csv` |
 | 沖縄 | 日付ベース | 30分 | `https://www.okiden.co.jp/denki2/juyo_10_{date}.csv` |
+
+多くのエリアは `juyo_0{連系線番号}_{date}.csv` という共通パターンに従う
+（北陸=05, 関西=06, 中国=07, 四国=08, 沖縄=10）。「固定」のエリア（東京・中部）で
+データが更新されなくなった場合、まずこの連番パターンの日付ベースURLが
+存在しないか確認する。
 
 参考まとめページ（送配電網協議会）: `https://www.tdgc.jp/areainfo/denki/`
 
@@ -244,6 +260,7 @@ currentUsageRate = latestActual / capacity × 100
 | `error.http %lld` | HTTP error: %lld | HTTPエラー: %lld |
 | `error.parse %@` | Data parse error: %@ | データ解析エラー: %@ |
 | `error.no_data` | No data found. The URL may have changed. | データが見つかりませんでした。URLが変更された可能性があります。 |
+| `error.stale_data` | The data source returned an outdated data file. The URL may have changed. | 取得したデータが古いままです。URLが変更された可能性があります。 |
 
 ---
 
