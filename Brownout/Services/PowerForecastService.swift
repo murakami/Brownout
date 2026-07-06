@@ -1,4 +1,7 @@
 import Foundation
+import os
+
+private let forecastLog = Logger(subsystem: "jp.co.bitz.Brownout", category: "PowerForecastService")
 
 enum ForecastError: LocalizedError {
     case invalidURL
@@ -59,20 +62,19 @@ struct CSVParser {
             let fields = line.components(separatedBy: ",")
             guard fields.count >= minCols else { continue }
 
-            // DATE 列が "YYYY/MM/DD" または "YYYY/M/D" 形式の行のみ処理
+            // DATE 列が "YYYY/M/D" 形式（月・日は1桁/2桁どちらもあり得る）の行のみ処理
             let datePart = fields[c.date].trimmingCharacters(in: .whitespaces)
-            guard datePart.count >= 9,
-                  datePart.prefix(4).allSatisfy(\.isNumber),
-                  datePart.dropFirst(4).first == "/" else { continue }
+            let dateComponents = datePart.split(separator: "/")
+            guard dateComponents.count == 3,
+                  dateComponents[0].count == 4, dateComponents[0].allSatisfy(\.isNumber),
+                  let y = Int(dateComponents[0]), let m = Int(dateComponents[1]), let d = Int(dateComponents[2])
+            else { continue }
             sawDateRow = true
 
             // CSV の DATE 列が要求日と一致しない行は無視する。
             // 固定URL（例: 旧関西 juyo1_kansai.csv）が更新停止して古いデータを
             // 返し続けるケースを、日付を無視して取り込んでしまわないようにするため。
-            let dateComponents = datePart.split(separator: "/")
-            guard dateComponents.count == 3,
-                  let y = Int(dateComponents[0]), let m = Int(dateComponents[1]), let d = Int(dateComponents[2]),
-                  y == base.year, m == base.month, d == base.day else { continue }
+            guard y == base.year, m == base.month, d == base.day else { continue }
             sawMatchingDateRow = true
 
             let timePart = fields[c.time].trimmingCharacters(in: .whitespaces)
@@ -132,16 +134,34 @@ actor PowerForecastService {
         let data: Data
         do {
             let (d, response) = try await URLSession.shared.data(for: request)
-            if let http = response as? HTTPURLResponse, http.statusCode != 200 {
+            let http = response as? HTTPURLResponse
+            forecastLog.debug("""
+                fetch \(area.id, privacy: .public): requested=\(url.absoluteString, privacy: .public) \
+                final=\(response.url?.absoluteString ?? "?", privacy: .public) \
+                status=\(http?.statusCode ?? -1) bytes=\(d.count)
+                """)
+            if let http, http.statusCode != 200 {
                 throw ForecastError.httpError(http.statusCode)
             }
             data = d
         } catch let e as ForecastError {
             throw e
         } catch {
+            forecastLog.error("fetch \(area.id, privacy: .public) network error: \(error.localizedDescription, privacy: .public)")
             throw ForecastError.networkError(error)
         }
-        return try CSVParser.parse(data, area: area, date: date)
+        do {
+            return try CSVParser.parse(data, area: area, date: date)
+        } catch {
+            let preview = String(data: data.prefix(200), encoding: area.csvFormat.encoding)
+                ?? String(data: data.prefix(200), encoding: .utf8)
+                ?? "(undecodable, \(data.count) bytes)"
+            forecastLog.error("""
+                parse \(area.id, privacy: .public) failed: \(String(describing: error), privacy: .public) \
+                preview=\(preview, privacy: .public)
+                """)
+            throw error
+        }
     }
 }
 

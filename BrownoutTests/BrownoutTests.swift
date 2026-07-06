@@ -103,9 +103,9 @@ struct CSVParserTests {
             "2026/6/9,0:00,500,490,85,600\n" +
             "2026/6/9,1:00,490,485,84,600\n"
         var cal = Calendar(identifier: .gregorian)
-        cal.timeZone = .jst
+        cal.timeZone = TimeZone(identifier: "Asia/Tokyo")!
         var dc = DateComponents()
-        dc.year = 2026; dc.month = 6; dc.day = 9; dc.hour = 0; dc.timeZone = .jst
+        dc.year = 2026; dc.month = 6; dc.day = 9; dc.hour = 0; dc.timeZone = cal.timeZone
         let date = cal.date(from: dc)!
         let data = csv.data(using: .utf8)!
         let result = try CSVParser.parse(data, area: .tohoku, date: date)

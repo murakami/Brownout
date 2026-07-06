@@ -1,5 +1,16 @@
 import Foundation
 
+extension String.Encoding {
+    /// Windows-31J (CP932)。Foundation の `.shiftJIS` は JIS X 0208 のみで、
+    /// 日本の電力会社CSVで使われる機種依存文字（丸数字・全角チルダ等）を含む
+    /// 実データのデコードに失敗するため、より寛容な CP932 を使う。
+    static let cp932 = String.Encoding(
+        rawValue: CFStringConvertEncodingToNSStringEncoding(
+            CFStringEncoding(CFStringEncodings.dosJapanese.rawValue)
+        )
+    )
+}
+
 struct PowerArea: Identifiable, Hashable, Sendable {
     static func == (lhs: PowerArea, rhs: PowerArea) -> Bool { lhs.id == rhs.id }
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
@@ -46,14 +57,14 @@ struct CSVFormat: Sendable {
 
     /// DATE(0), TIME(1), 実績(2), 予測(3), 使用率(4), 供給力(5) — 東北・関西等の標準6列構成
     static let standard = CSVFormat(
-        encoding: .shiftJIS,
+        encoding: .cp932,
         intervalMinutes: 30,
         columns: .standard
     )
 
     /// DATE(0), TIME(1), 実績(2), 予測(3), 供給力(4), 使用率(5) — 東京(TEPCO)固有の列順
     static let tepco = CSVFormat(
-        encoding: .shiftJIS,
+        encoding: .cp932,
         intervalMinutes: 30,
         columns: .tepco
     )
@@ -180,7 +191,7 @@ extension PowerArea {
         csvStrategy: .dateBased(
             template: "https://www.kyuden.co.jp/td_power_usages/csv/juyo-hourly-{date}.csv"
         ),
-        csvFormat: CSVFormat(encoding: .shiftJIS, intervalMinutes: 60, columns: .standard)
+        csvFormat: CSVFormat(encoding: .cp932, intervalMinutes: 60, columns: .standard)
     )
 
     static let okinawa = PowerArea(
