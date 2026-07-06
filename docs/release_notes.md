@@ -1,5 +1,17 @@
 # リリースノート
 
+## Version 2.0.1
+
+### バージョンの新機能（日本語）
+
+一部エリアで電力データが取得できない不具合を修正しました。
+
+### What's New (English)
+
+Fixed an issue where power demand data could not be retrieved for some areas.
+
+---
+
 ## Version 2.0
 
 ### バージョンの新機能（日本語）
