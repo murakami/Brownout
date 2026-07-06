@@ -56,3 +56,4 @@
 "error.http %lld"   = "HTTPエラー: %lld";
 "error.parse %@"    = "データ解析エラー: %@";
 "error.no_data"     = "データが見つかりませんでした。URLが変更された可能性があります。";
+"error.stale_data"  = "取得したデータが古いままです。URLが変更された可能性があります。";

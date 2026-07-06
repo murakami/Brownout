@@ -6,6 +6,7 @@ enum ForecastError: LocalizedError {
     case httpError(Int)
     case parseError(String)
     case noData
+    case staleData
 
     var errorDescription: String? {
         switch self {
@@ -23,6 +24,8 @@ enum ForecastError: LocalizedError {
             )
         case .noData:
             return String(localized: "error.no_data")
+        case .staleData:
+            return String(localized: "error.stale_data")
         }
     }
 }
@@ -49,6 +52,8 @@ struct CSVParser {
         let minCols = max(c.date, c.time, c.actual, c.predicted, c.capacity) + 1
         var entries: [ForecastEntry] = []
         var seenTimes = Set<Date>()   // 重複セクション除外（TEPCO 等は複数 DATE/TIME ブロックを持つ）
+        var sawDateRow = false        // DATE 形式の行を1つでも見たか（フォーマット崩れ検知用）
+        var sawMatchingDateRow = false // 要求日と一致する行を1つでも見たか（固定URLの古いデータ検知用）
 
         for line in text.components(separatedBy: .newlines) {
             let fields = line.components(separatedBy: ",")
@@ -59,6 +64,16 @@ struct CSVParser {
             guard datePart.count >= 9,
                   datePart.prefix(4).allSatisfy(\.isNumber),
                   datePart.dropFirst(4).first == "/" else { continue }
+            sawDateRow = true
+
+            // CSV の DATE 列が要求日と一致しない行は無視する。
+            // 固定URL（例: 旧関西 juyo1_kansai.csv）が更新停止して古いデータを
+            // 返し続けるケースを、日付を無視して取り込んでしまわないようにするため。
+            let dateComponents = datePart.split(separator: "/")
+            guard dateComponents.count == 3,
+                  let y = Int(dateComponents[0]), let m = Int(dateComponents[1]), let d = Int(dateComponents[2]),
+                  y == base.year, m == base.month, d == base.day else { continue }
+            sawMatchingDateRow = true
 
             let timePart = fields[c.time].trimmingCharacters(in: .whitespaces)
             guard let time = parseTime(timePart, base: base, calendar: cal) else { continue }
@@ -78,7 +93,9 @@ struct CSVParser {
             ))
         }
 
-        if entries.isEmpty { throw ForecastError.noData }
+        if entries.isEmpty {
+            throw (sawDateRow && !sawMatchingDateRow) ? ForecastError.staleData : ForecastError.noData
+        }
         return DailyForecast(area: area, date: date, entries: entries)
     }
 

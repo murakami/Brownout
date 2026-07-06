@@ -137,13 +137,15 @@ extension PowerArea {
         csvFormat: .standard
     )
 
+    /// 関西: かつては固定URL(juyo1_kansai.csv)だったが、サイト更新により
+    /// 実績データは日付ベースの `juyo_06_{date}.csv` に移行済み（jisseki-latest.json で確認）
     static let kansai = PowerArea(
         id: "kansai",
         nameKey: "area.kansai",
         companyKey: "company.kansai",
         websiteURL: URL(string: "https://www.kansai-td.co.jp/denkiyoho/")!,
-        csvStrategy: .fixed(
-            url: "https://www.kansai-td.co.jp/yamasou/juyo1_kansai.csv"
+        csvStrategy: .dateBased(
+            template: "https://www.kansai-td.co.jp/yamasou/juyo_06_{date}.csv"
         ),
         csvFormat: .standard
     )

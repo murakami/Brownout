@@ -52,11 +52,18 @@ Brownout/
 | 東京 | 日付ベース | `juyo-{date}.csv` |
 | 中部 | 固定 | `juyo_cepco003.csv` ※URL 要確認 |
 | 北陸 | 日付ベース | `juyo_05_{date}.csv` |
-| 関西 | 固定 | `juyo1_kansai.csv` |
+| 関西 | 日付ベース | `juyo_06_{date}.csv`（2026-07 訂正: 旧 `juyo1_kansai.csv` は更新停止・サイレントに古いデータを返すため廃止） |
 | 中国 | 日付ベース | `juyo_07_{date}.csv` ※URL 要確認 |
-| 四国 | 固定 | `juyo_shikoku.csv` |
+| 四国 | 日付ベース | `juyo_08_{date}.csv` |
 | 九州 | 日付ベース | `juyo-hourly-{date}.csv`（60分間隔） |
 | 沖縄 | 日付ベース | `juyo_10_{date}.csv` |
+
+多くのエリアは `juyo_0{連系線番号}_{date}.csv` という共通パターンに従う（例: 北陸=05, 関西=06, 中国=07, 四国=08, 沖縄=10）。
+「固定URL」表記のエリア（中部・東京）でデータが更新されなくなった場合、まずこの連番パターンの日付ベースURLが存在しないか確認する。
+
+固定URL・日付ベースURLを問わず、CSV の DATE 列が取得日と一致しない場合は `ForecastError.staleData` を投げて検知する
+（`PowerForecastService.CSVParser` 参照）。固定URLがサイレントに古いデータを返し続けるケース（今回の関西の障害の原因）を
+自動検出するための仕組みなので、新しいエリアを追加する際もこの検証ロジックに依存してよい。
 
 参考: 送配電網協議会まとめページ https://www.tdgc.jp/areainfo/denki/
 

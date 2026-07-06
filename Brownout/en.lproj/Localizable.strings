@@ -56,3 +56,4 @@
 "error.http %lld"   = "HTTP error: %lld";
 "error.parse %@"    = "Data parse error: %@";
 "error.no_data"     = "No data found. The URL may have changed.";
+"error.stale_data"  = "The data source returned an outdated data file. The URL may have changed.";
